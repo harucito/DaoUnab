@@ -1,0 +1,9 @@
+{
+    "name": "Peepo University Pass",
+    "description": "Este es el pase de votación para el DAO universitario.",
+    "image": "ipfs://bafybeifmbw5aorxpzcdatlqmcxsd4kjeifjumxwmsdzc5ahln34qdbv47e",
+    "attributes": [
+      { "trait_type": "Access Level", "value": "Voter" }
+    ]
+  }
+  

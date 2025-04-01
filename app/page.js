@@ -1,101 +1,1106 @@
-import Image from "next/image";
+"use client";
+import { useState, useEffect } from "react";
+import { ethers } from "ethers";
+import { contractAddress, contractABI } from "./components/contractABI";
+import { nftContractAddress, nftContractABI } from "./components/NftABI";
+import VotingComponent from "./components/VotingComponent";
+import ShowWinner from "./components/showresults";
+import RemainingTime from "./components/timeremaining";
+import AllVotes from "./components/allvotes";
+import Xxx from "./components/estesies.js";
+import ElectionInfo from "./components/getElection";
+import GetElectionById from "./components/GetElectionById";
+import AdminPanel from "./components/admin";
+import MintNFT from "./components/mint"; // Componente para mintear el NFT
+import GetWinner from "./components/getwinner";
 
-export default function Home() {
+export default function VotingDapp() {
+  const [provider, setProvider] = useState(null);
+  const [contract, setContract] = useState(null);
+  const [account, setAccount] = useState(null);
+  const [owner, setOwner] = useState(null);
+  const [loadingElection, setLoadingElection] = useState(false);
+  const [mintcontract, setMintContract] = useState(null);
+  const [hasNFT, setHasNFT] = useState(false);
+  const [loadingNFT, setLoadingNFT] = useState(true); // Estado para mostrar "cargando..."
+  const PASS_ID = 1; // ID del NFT
+
+  useEffect(() => {
+    async function loadBlockchainData() {
+      if (window.ethereum) {
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        setProvider(provider);
+        const signer = provider.getSigner();
+        const contract = new ethers.Contract(contractAddress, contractABI, signer);
+        setContract(contract);
+        const contractMint = new ethers.Contract(nftContractAddress, nftContractABI, signer);
+        setMintContract(contractMint);
+        
+        // Obtener el owner del contrato
+        const contractOwner = await contract.owner();
+        setOwner(contractOwner.toLowerCase());
+      } else {
+        console.log("MetaMask no está instalado.");
+      }
+    }
+    loadBlockchainData();
+  }, []);
+
+  async function connectWallet() {
+    const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+    setAccount(accounts[0]);
+  }
+
+  async function checkNFTBalance(userAddress) {
+    if (!mintcontract) return;
+    setLoadingNFT(true); // Mostrar cargando mientras se consulta el NFT
+    try {
+      const balance = await mintcontract.balanceOf(userAddress, PASS_ID);
+      setHasNFT(balance.gt(0)); // Si tiene al menos 1 NFT, puede votar
+    } catch (error) {
+      console.error("Error verificando NFT:", error);
+    } finally {
+      setLoadingNFT(false); // Ocultar cargando después de la consulta
+    }
+  }
+
+  // Verifica el NFT cada vez que cambia la cuenta
+  
+  useEffect(() => {
+    if (account) {
+      checkNFTBalance(account);
+    }
+  }, [account, mintcontract]);
+
+  async function fetchElectionWinner(category, electionId) {
+    if (!contract || !category || !electionId) return;
+    try {
+      setLoadingElection(true);
+      console.log("Obteniendo ganador para", category, electionId);
+      const result = await contract.getElectionWinner(category, parseInt(electionId));
+      console.log("Ganador obtenido:", result);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+    } catch (error) {
+      console.error("Error al obtener ganador:", error);
+    } finally {
+      setLoadingElection(false);
+    }
+  }
+
+  async function startElection(category, candidates, duration) {
+    if (!contract || !category || !candidates || !duration) return;
+    try {
+      setLoadingElection(true);
+      console.log("Iniciando elección con datos:", category, candidates, duration);
+      const tx = await contract.startElection(category, candidates.split(","), parseInt(duration));
+      await tx.wait();
+      alert("Elección creada con éxito");
+    } catch (error) {
+      console.error("Error al iniciar elección:", error);
+    } finally {
+      setLoadingElection(false);
+    }
+  }
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.js
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <div className="p-6 max-w-2xl mx-auto bg-white shadow-md rounded-lg">
+      <h1 className="text-2xl font-bold mb-4">DApp de Votación</h1>
+      {account && <p>Conectado: {account}</p>}
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      {!account ? (
+        <button onClick={connectWallet} className="px-4 py-2 bg-blue-500 text-white rounded">
+          Conectar Wallet
+        </button>
+      ) : (
+        <>  
+          {/* Si el usuario no tiene el NFT, mostrar botón para mintearlo */}
+          {loadingNFT ? (
+            <p className="text-yellow-500">Verificando si tienes el NFT...</p>
+          ) : !hasNFT ? (
+            <div className="my-4">
+              <p className="text-red-500">No tienes el NFT necesario para votar.</p>
+              <MintNFT provider={provider} />
+            </div>
+          ) : (
+            <p className="text-green-500">Tienes el NFT, puedes votar.</p>
+          )}
+
+          {/* Panel de administración, solo visible para el dueño */}
+          {account === owner && (
+            <div>
+              <AdminPanel
+                contract={contract}
+                owner={owner}
+                account={account}
+                startElection={startElection}
+                fetchElectionWinner={fetchElectionWinner}
+              />
+              <GetWinner></GetWinner>
+              <ElectionInfo />
+              <GetElectionById />
+            </div>
+          )}
+
+          {/* Sección de votación (solo aparece si el usuario tiene el NFT) */}
+          {hasNFT && <Xxx />}
+        </>
+      )}
     </div>
   );
 }
