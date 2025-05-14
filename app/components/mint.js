@@ -64,17 +64,17 @@ export default function MintNFT({ provider }) {
     };
 
     return (
-        <div className="flex flex-col items-center p-4">
-            <h1 className="text-xl font-bold">Mintear NFT</h1>
+        <div className="card max-w-md mx-auto rounded-lg p-4 shadow-lg border border-gray-300" style={{ backgroundColor: "var(--mint-bg)" }}>
+            <h1 className="text-2xl font-bold mb-4 text-primary">Mintear NFT</h1>
             <button
                 onClick={mintNFT}
-                className="bg-green-500 text-white px-4 py-2 rounded mt-4"
+                className="w-full bg-secondary text-white p-3 rounded-md shadow-md hover:shadow-lg transition-shadow"
                 disabled={loading}
             >
                 {loading ? "Minteando..." : "Mintear NFT"}
             </button>
-            {message && <p className="mt-2 text-red-500">{message}</p>}
-            <p className="mt-4 text-gray-600">NFTs minteados: {totalMinted} / 1000</p>
+            {message && <p className="mt-4 text-center text-red-500">{message}</p>}
+            <p className="mt-4 text-center text-gray-600">NFTs minteados: {totalMinted} / 1000</p>
         </div>
     );
 }

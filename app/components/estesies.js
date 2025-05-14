@@ -3,7 +3,7 @@ import { ethers } from 'ethers';
 import { contractAddress, contractABI } from './contractABI';
 
 const categories = [
-  "Rector", "Representante Estudiantil", "Consejo Académico", "Consejo Superior","yo","tu","tutu"
+  "Junta Directiva - Estudiantes", "Junta Directiva - Docentes", "Consejo Académico - Estudiantes", "Consejo Académico - Docentes","Consejo de Facultad - Estudiantes","Consejo de Facultad - Docentes","Comité Curricular de Programa - Estudiantes","Comité Curricular de Programa - Docentes","tutu","Pruebas"
 ];
 
 const Xxx = () => {
@@ -17,6 +17,8 @@ const Xxx = () => {
   const [HasUserVoted, setHasUserVoted] = useState(false);
   const [isVoting, setIsVoting] = useState(false);
   const [userAddress, setUserAddress] = useState(null);
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
 
   useEffect(() => {
     const initProvider = async () => {
@@ -90,9 +92,14 @@ const Xxx = () => {
   const fetchRemainingTime = async () => {
     if (!contract || !category) return;
     try {
-      const result = await contract.getRemainingTime(category);
-      const timeLeft = result.toNumber();
+      const electionId = await contract.latestElectionId(category);
+      const result = await contract.getElectionById(category, electionId);
+
+      const timeLeft = Math.max(0, Math.floor((Number(result.votingEnd) * 1000 - Date.now()) / 1000));
       setRemainingTime(timeLeft);
+
+      setStartDate(new Date(Number(result.votingStart) * 1000).toLocaleString());
+      setEndDate(new Date(Number(result.votingEnd) * 1000).toLocaleString());
 
       if (timeLeft === 0) {
         setHasUserVoted(true);
@@ -100,7 +107,7 @@ const Xxx = () => {
         fetchWinner();
       }
     } catch (error) {
-      console.error('Error al obtener el tiempo restante:', error);
+      console.error('Error al obtener el tiempo restante o las fechas:', error);
     }
   };
 
@@ -135,15 +142,15 @@ const Xxx = () => {
   }, [category, userAddress]);
 
   return (
-    <div className="p-4 bg-gray-100 rounded-xl">
-      <h1 className="text-xl font-bold mb-4">Sistema de Votación</h1>
+    <div className="p-6 rounded-lg shadow-lg border border-gray-300" style={{ backgroundColor: "var(--voting-bg)" }}>
+      <h1 className="text-3xl font-bold mb-6 text-center text-primary">Sistema de Votación</h1>
 
-      <div className="mb-2">
-        <label className="font-semibold">Selecciona una categoría:</label>
+      <div className="mb-6">
+        <label className="font-semibold block mb-2 text-lg">Selecciona una categoría:</label>
         <select
           value={category}
           onChange={(e) => setCategory(e.target.value)}
-          className="border p-2 rounded-md w-full"
+          className="border border-gray-400 p-3 rounded-md w-full text-lg bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary"
           disabled={isVoting}
         >
           <option value="">Selecciona una categoría...</option>
@@ -155,62 +162,62 @@ const Xxx = () => {
 
       {category && (
         <>
-          <div className="mb-4">
-            <p className="font-semibold">Candidatos:</p>
-            <ul className="grid grid-cols-2 gap-4">
+          <div className="mb-6">
+            <p className="font-semibold mb-4 text-lg">Candidatos:</p>
+            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               {candidates.map((c) => (
                 <li
                   key={c.index}
-                  className={`p-2 bg-white shadow-md rounded-md mb-2 flex flex-col items-center justify-center text-center ${
-                    selectedCandidateIndex === c.index ? "bg-lightblue" : "cursor-pointer"
+                  className={`p-4 rounded-lg shadow-lg border border-gray-300 flex flex-col items-center justify-center text-center transition-transform transform ${
+                    selectedCandidateIndex === c.index ? 'border-orange-500 scale-105' : 'hover:scale-105'
                   }`}
+                  style={{
+                    backgroundColor: "var(--candidate-bg)",
+                    cursor: HasUserVoted || remainingTime === 0 || isVoting ? 'not-allowed' : 'pointer',
+                    opacity: HasUserVoted || remainingTime === 0 || isVoting ? 0.6 : 1,
+                  }}
                   onClick={() => {
                     if (!HasUserVoted && remainingTime > 0 && !isVoting) {
                       setSelectedCandidateIndex(c.index);
                     }
                   }}
-                  style={{
-                    backgroundColor: selectedCandidateIndex === c.index ? 'lightblue' : 'white',
-                    cursor: HasUserVoted || remainingTime === 0 || isVoting ? 'not-allowed' : 'pointer',
-                    opacity: HasUserVoted || remainingTime === 0 || isVoting ? 0.6 : 1
-                  }}
                 >
                   <img 
                     src={`https://ipfs.io/ipfs/${c.imageCID}`} 
                     alt={c.name} 
-                    className="w-32 h-32 object-cover rounded-full" 
+                    className="w-24 h-24 object-cover rounded-full mb-4 border-2 border-primary" 
                   />
-                  <p className="mt-2 font-semibold">{c.name}</p>
-                  <p>Votos: {c.votes}</p>
+                  <p className="font-semibold text-lg">{c.name}</p>
+                  <p className="text-sm">Votos: {c.votes}</p>
                 </li>
               ))}
             </ul>
           </div>
 
+          <div className="flex justify-between mt-6">
+            <p><strong>Inicio:</strong> {startDate}</p>
+            <p><strong>Fin:</strong> {endDate}</p>
+            <p><strong>Tiempo restante:</strong> {remainingTime} segundos</p>
+          </div>
+
           {HasUserVoted || remainingTime === 0 ? (
-            <p className="text-green-600 font-semibold">
+            <p className="text-green-600 font-semibold text-center text-lg mt-4">
               {remainingTime === 0 ? "La votación ha finalizado" : "Ya has votado en esta elección"}
             </p>
           ) : (
             <button
               onClick={voteForCandidate}
-              className={`mt-4 px-4 py-2 rounded w-full text-white ${
-                isVoting ? "bg-gray-500 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-700"
-              }`}
+              className="mt-4 px-6 py-3 rounded-lg w-full text-white text-lg bg-secondary shadow-md hover:shadow-lg transition-shadow"
               disabled={isVoting}
             >
               {isVoting ? "Procesando voto..." : "Votar"}
             </button>
           )}
 
-          {remainingTime !== null && (
-            <p className="mt-2">Tiempo restante: {remainingTime} segundos</p>
-          )}
-
           {winner && remainingTime === 0 && (
-            <p className="mt-2 text-xl font-bold text-red-500">
-               ¡El ganador es: {winner}!
-            </p>
+            <div className="mt-6 text-center">
+              <p className="text-2xl font-bold text-red-500">El ganador es: {winner}</p>
+            </div>
           )}
         </>
       )}

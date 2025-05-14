@@ -105,56 +105,52 @@ export default function AdminPanel({ contract, owner, account, startElection }) 
     setLoadingElection(false);
   };
 
+
   return (
-    <div className="mt-6 bg-gray-100 rounded-xl p-4">
-      <h2 className="text-xl font-bold">Administración</h2>
-
-      <h3 className="text-lg font-semibold">Crear Elección</h3>
-      <input 
-        type="text" 
-        placeholder="Categoría" 
-        value={newElectionCategory} 
-        onChange={(e) => setNewElectionCategory(e.target.value)} 
-        className="border p-2 w-full rounded mt-2"
+    <div className="card max-w-4xl mx-auto rounded-lg p-4 shadow-lg border border-gray-300" style={{ backgroundColor: "var(--admin-bg)" }}>
+      <h2 className="text-2xl font-bold mb-4 text-primary text-center">Panel de Administración</h2>
+      <h3 className="text-lg font-semibold mb-2">Crear Elección</h3>
+      <input
+        type="text"
+        placeholder="Categoría"
+        value={newElectionCategory}
+        onChange={(e) => setNewElectionCategory(e.target.value)}
+        className="w-full p-3 border rounded-md mb-4 bg-neutral focus:outline-none focus:ring-2 focus:ring-primary"
       />
-
       {candidates.map((name, index) => (
-        <div key={index} className="mt-2 flex items-center space-x-2">
+        <div key={index} className="flex items-center gap-4 mb-4">
           <input
             type="text"
             placeholder={`Candidato ${index + 1}`}
             value={name}
             onChange={(e) => handleCandidateChange(index, e.target.value)}
-            className="border p-2 w-1/2 rounded"
+            className="w-1/2 p-3 border rounded-md bg-neutral focus:outline-none focus:ring-2 focus:ring-primary"
           />
           <input
             type="file"
             accept="image/*"
             onChange={(e) => handleImageChange(index, e.target.files[0])}
-            className="border p-2 w-1/2 rounded"
+            className="w-1/2 p-3 border rounded-md bg-neutral focus:outline-none focus:ring-2 focus:ring-primary"
           />
         </div>
       ))}
-
-      <button 
-        onClick={addCandidate} 
+      <button
+        onClick={addCandidate}
         disabled={candidates.length >= MAX_CANDIDATES}
-        className="mt-2 px-4 py-2 rounded text-white bg-blue-500 hover:bg-blue-700 disabled:bg-gray-500"
+        className="w-full bg-primary text-white p-3 rounded-md hover:bg-green-700 transition mb-4"
       >
         Agregar Candidato
       </button>
-
-      <input 
-        type="number" 
-        placeholder="Duración (min)" 
-        value={duration} 
-        onChange={(e) => setDuration(e.target.value)} 
-        className="border p-2 w-full rounded mt-2"
+      <input
+        type="number"
+        placeholder="Duración (min)"
+        value={duration}
+        onChange={(e) => setDuration(e.target.value)}
+        className="w-full p-3 border rounded-md mb-4 bg-neutral focus:outline-none focus:ring-2 focus:ring-primary"
       />
-
-      <button 
-        onClick={createElection} 
-        className="mt-4 px-4 py-2 rounded w-full text-white bg-red-500 hover:bg-red-700 disabled:bg-gray-500"
+      <button
+        onClick={createElection}
+        className="w-full bg-primary text-white p-3 rounded-md hover:bg-blue-700 transition"
         disabled={loadingElection}
       >
         {loadingElection ? "Procesando..." : "Iniciar Elección"}

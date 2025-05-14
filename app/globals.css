@@ -3,19 +3,87 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #ffffff; /* Blanco */
+  --foreground: #222222; /* Negro */
+  --primary: #f97316;    /* Naranja */
+  --secondary: #fb923c;  /* Naranja claro */
+  --neutral: #f3f4f6;    /* Gris claro */
+  --card-bg: #ffffff;    /* Fondo de tarjetas */
+  --card-highlight: #ffedd5; /* Resaltado de tarjetas */
+  --button-bg: #f97316;  /* Fondo de botones */
+  --button-hover-bg: #ea580c; /* Hover de botones */
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #181818; /* Negro */
+    --foreground: #ffffff; /* Blanco */
+    --primary: #f97316;    /* Naranja */
+    --secondary: #fb923c;  /* Naranja claro */
+    --neutral: #1f2937;    /* Gris oscuro */
+    --card-bg: #1f2937;    /* Fondo de tarjetas */
+    --card-highlight: #f97316; /* Resaltado de tarjetas */
+    --button-bg: #f97316;  /* Fondo de botones */
+    --button-hover-bg: #ea580c; /* Hover de botones */
   }
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+button {
+  background-color: var(--button-bg);
+  color: var(--foreground);
+  transition: background-color 0.3s, transform 0.1s; /* Reducir la duración del transform */
+}
+
+button:hover {
+  background-color: var(--button-hover-bg);
+  transform: scale(1.02); /* Reducir el efecto de escala */
+}
+
+.card {
+  background: var(--card-bg);
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.card:hover {
+  background: var(--card-highlight);
+}
+
+select {
+  background: #ffffff; /* Fondo blanco */
+  color: #4b5563; /* Gris predeterminado */
+  border: 1px solid var(--foreground);
+  padding: 10px;
+  border-radius: var(--border-radius);
+  transition: background-color 0.3s, color 0.3s;
+}
+
+select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px var(--primary);
+}
+
+.theme-toggle {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  background: var(--button-bg);
+  color: white;
+  padding: 10px 20px;
+  font-size: 14px;
+  border-radius: var(--border-radius);
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.theme-toggle:hover {
+  background: var(--button-hover-bg);
+  transform: scale(1.1);
 }

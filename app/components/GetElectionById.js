@@ -25,7 +25,7 @@ const ABI = [
   }
 ];
 
-export default function GetElectionById() {
+export default function GetElectionById({ darkMode }) {
   const [category, setCategory] = useState("");
   const [electionId, setElectionId] = useState("");
   const [election, setElection] = useState(null);
@@ -57,44 +57,44 @@ export default function GetElectionById() {
   }
 
   return (
-    <div className="max-w-md mx-auto p-4 border rounded shadow">
-      <h2 className="text-xl font-bold">Consultar Elección por ID</h2>
+    <div className={`max-w-md mx-auto rounded-lg p-4 shadow-lg border border-gray-300 ${darkMode ? "bg-cardDark text-foregroundDark" : "bg-white text-foregroundLight"}`}>
+      <h2 className="text-2xl font-bold mb-4 text-primary">Consultar Elección por ID</h2>
       <input
         type="text"
         placeholder="Categoría"
         value={category}
         onChange={(e) => setCategory(e.target.value)}
-        className="w-full p-2 border rounded mt-2"
+        className="w-full p-3 border rounded-md mb-4 bg-neutral focus:outline-none focus:ring-2 focus:ring-primary"
       />
       <input
         type="number"
         placeholder="ID de la Elección"
         value={electionId}
         onChange={(e) => setElectionId(e.target.value)}
-        className="w-full p-2 border rounded mt-2"
+        className="w-full p-3 border rounded-md mb-4 bg-neutral focus:outline-none focus:ring-2 focus:ring-primary"
       />
       <button
         onClick={fetchElectionById}
-        className="w-full bg-green-500 text-white p-2 rounded mt-2"
+        className="w-full bg-primary text-white p-3 rounded-md shadow-md hover:bg-buttonHover transition-shadow"
         disabled={loading}
       >
         {loading ? "Cargando..." : "Consultar"}
       </button>
       {election && (
-        <div className="mt-4 border-t pt-2">
+        <div className="mt-6 border-t pt-4">
           <p><strong>ID:</strong> {election.id}</p>
           <p><strong>Categoría:</strong> {election.category}</p>
           <p><strong>Inicio:</strong> {election.start}</p>
           <p><strong>Fin:</strong> {election.end}</p>
-          <h3 className="mt-2 font-bold">Candidatos:</h3>
-          <ul className="space-y-2">
+          <h3 className="mt-4 font-bold text-lg">Candidatos:</h3>
+          <ul className="space-y-4">
             {election.candidates.map((c, i) => (
-              <li key={i} className="flex items-center gap-2">
+              <li key={i} className="flex items-center gap-4">
                 {c.imageCID && (
                   <img
                     src={`https://ipfs.io/ipfs/${c.imageCID}`}
                     alt={c.name}
-                    className="w-12 h-12 rounded-full object-cover border"
+                    className="w-16 h-16 rounded-full object-cover border-2 border-primary"
                   />
                 )}
                 <span>{c.name} - {c.votes} votos</span>
